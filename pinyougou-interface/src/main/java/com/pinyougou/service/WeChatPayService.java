@@ -1,0 +1,11 @@
+package com.pinyougou.service;
+
+import java.util.Map;
+
+public interface WeChatPayService {
+    Map<String, Object> genPayCode(String outTradeNo, String totalFee);
+
+    Map<String,String> queryPayStatus(String outTradeNo);
+
+    Map<String,String> closePayTimeOut(String outTradeNo);
+}

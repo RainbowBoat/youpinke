@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!--######### 配置http请求URL拦截规则 #########-->
+
+    <!-- 配置不拦截的URL -->
+    <security:http pattern="/css/**" security="none"/>
+    <security:http pattern="/img/**" security="none"/>
+    <security:http pattern="/js/**" security="none"/>
+    <security:http pattern="/plugins/**" security="none"/>
+    <security:http pattern="/login.html" security="none"/>
+
+    <!-- 配置需要拦截的http请求URL -->
+    <security:http>
+        <!-- 需要拦截的URL的访问权限 -->
+        <security:intercept-url pattern="/**" access="hasRole('ROLE_ADMIN')"/>
+
+        <!-- 登陆表单配置
+                login-processing-url  即表单提交地址
+         -->
+        <security:form-login login-page="/login.html"
+                             login-processing-url="/login"
+                             username-parameter="username"
+                             password-parameter="password"
+
+                             default-target-url="/admin/index.html"
+                             always-use-default-target="true"
+                             authentication-failure-url="/login.html"/>
+                            <!-- 转发跳转 -->
+                            <!--authentication-success-forward-url="/admin/index.html"-->
+                            <!--authentication-failure-forward-url="/login.html"/>-->
+        <security:logout logout-url="/logout" invalidate-session="true"/>
+
+        <!-- 关闭跨站点请求伪造 -->
+        <security:csrf disabled="true"/>
+
+        <!-- 配置允许有iframe子窗口 -->
+        <security:headers>
+            <!-- 配置在相同的域名下可以访问 -->
+            <security:frame-options policy="SAMEORIGIN"/>
+        </security:headers>
+
+
+    </security:http>
+
+    <!--######### 配置登陆管理器 #########-->
+    <security:authentication-manager>
+        <!-- 配置认证提供者 -->
+        <security:authentication-provider>
+            <security:user-service>
+                <security:user name="admin" password="123456" authorities="ROLE_ADMIN"/>
+                <security:user name="test" password="123456" authorities="ROLE_ADMIN"/>
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+
+</beans>

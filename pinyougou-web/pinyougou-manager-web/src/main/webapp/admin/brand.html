@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>品牌管理</title>
+    <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/plugins/adminLTE/css/AdminLTE.css"/>
+    <link rel="stylesheet" href="/plugins/adminLTE/css/skins/_all-skins.min.css"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+
+	<script src="/plugins/angularjs/angular.min.js"></script>
+
+	<link rel="stylesheet" href="/plugins/angularjs/pagination.css"/>
+	<script src="/plugins/angularjs/pagination.js"></script>
+
+	<script src="/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+	<script src="/js/base-pagination.js"></script>
+	<script src="/js/service/baseService.js"></script>
+	<script src="/js/controller/baseController.js"></script>
+	<script src="/js/controller/brandController.js"></script>
+
+	<!--<script type="text/javascript">-->
+
+		<!--var app = angular.module("pinyougou", ['pagination']);-->
+
+		<!--app.controller("brandController", function ($scope, $http) {-->
+			<!--$scope.findAll = function () {-->
+                <!--$http({-->
+                    <!--method:'get',-->
+                    <!--url:'/brand/findAll'-->
+                <!--}).then(function (response) {-->
+                    <!--$scope.brands = response.data-->
+                <!--}, function () {-->
+                    <!--alert("加载数据失败")-->
+                <!--});-->
+                <!--// $http.get("/brand/findAll").then(function (response) {-->
+                <!--//     $scope.brands = response.data;-->
+                <!--// }, function (reason) {-->
+                <!--//     alert("服务器忙");-->
+                <!--// });-->
+            <!--}-->
+
+            <!--$scope.save = function () {-->
+				<!--$http.post("/brand/save", $scope.brand).then(function (value) {-->
+				    <!--if (value.data) {-->
+                        <!--$scope.reload();-->
+                    <!--}-->
+				<!--}, function (reason) {-->
+				    <!--alert("添加失败")-->
+				<!--});-->
+            <!--}-->
+
+            <!--$scope.show = function (brand) {-->
+				<!--var stringify = JSON.stringify(brand);-->
+				<!--$scope.brand = JSON.parse(stringify);-->
+            <!--}-->
+
+            <!--$scope.paginationConf = {-->
+			    <!--currentPage : 1,-->
+				<!--totalItems : 0,-->
+				<!--itemsPerPage : 10,-->
+				<!--perPageOptions : [10, 20, 30],-->
+				<!--onChange : function () {-->
+					<!--$scope.reload();-->
+                <!--}-->
+
+			<!--}-->
+
+			<!--$scope.reload = function () {-->
+				<!--$scope.search($scope.paginationConf.currentPage,-->
+					<!--$scope.paginationConf.itemsPerPage);-->
+            <!--}-->
+
+            <!--$scope.searchBrand = {};-->
+
+            <!--$scope.search = function (pageNum, rows) {-->
+			    <!--// alert(pageNum);-->
+			    <!--// alert(rows);-->
+                <!--$http({-->
+                    <!--url: '/brand/findAsPage?pageNum=' + pageNum + '&rows=' + rows,-->
+                    <!--method: 'get',-->
+                    <!--params: $scope.searchBrand-->
+                <!--}).then(function (response) {-->
+				    <!--$scope.brands = response.data.rows;-->
+				    <!--$scope.paginationConf.totalItems = response.data.total;-->
+				<!--})-->
+            <!--}-->
+
+            <!--$scope.selections = [];-->
+
+            <!--$scope.updateSelection = function ($event, id) {-->
+				<!--if ($event.target.checked) {-->
+				    <!--$scope.selections.push(id);-->
+				<!--} else {-->
+				    <!--var idx = $scope.selections.indexOf(id);-->
+                    <!--$scope.selections.splice(idx, 1);-->
+				<!--}-->
+				<!--alert($scope.selections);-->
+            <!--}-->
+
+            <!--$scope.deleteSelections = function () {-->
+                <!--alert($scope.selections);-->
+				<!--// $http({-->
+				<!--// 	url:'/brand/deleteSelections',-->
+				<!--// 	method:'get',-->
+				<!--// 	params:$scope.selections-->
+				<!--// }).then(function (response7) {-->
+				<!--//     if (response) {-->
+				<!--//         $scope.reload();-->
+				<!--// 	}-->
+				<!--// });-->
+				<!--$http.get('/brand/deleteSelections?selections=' + $scope.selections)-->
+					<!--.then(function (response) {-->
+				    <!--if (response) {-->
+				        <!--$scope.reload();-->
+					<!--}-->
+				<!--})-->
+            <!--}-->
+
+
+        <!--});-->
+
+	<!--</script>-->
+
+</head>
+<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="brandController">
+	<!-- .box-body -->
+	<div class="box-header with-border">
+		<h3 class="box-title">品牌管理</h3>
+	</div>
+
+	<div class="box-body">
+		<!-- 数据表格 -->
+		<div class="table-box">
+			<!--工具栏-->
+			<div class="pull-left">
+				<div class="form-group form-inline">
+					<div class="btn-group">
+						<button type="button" class="btn btn-default" title="新建" data-toggle="modal" data-target="#editModal" ng-click="brand={}"><i class="fa fa-file-o"></i> 新建</button>
+						<button type="button" class="btn btn-default" title="删除" ng-click="deleteSelections()"><i class="fa fa-trash-o"></i> 删除</button>
+						<button type="button" class="btn btn-default" title="刷新" onclick="window.location.reload();"><i class="fa fa-refresh"></i> 刷新</button>
+					</div>
+				</div>
+			</div>
+			<div class="box-tools pull-right">
+				<div class="has-feedback">
+					<!--  查询条件区-->
+					<table>
+						<tr>
+							<td><input class="form-control" ng-model="searchBrand.name" placeholder="品牌名称">
+							</td>
+							<td><input class="form-control" ng-model="searchBrand.firstChar" placeholder="首字母">
+							</td>
+							<td>
+								<button type="button" ng-click="reload()" class="btn btn-default">
+									<i class="fa fa-trash-o"></i> 查询
+								</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div><br/>
+			<!--工具栏/-->
+			<!--数据列表-->
+			<table id="dataList" class="table table-bordered table-striped table-hover dataTable">
+				<thead>
+					<tr>
+						<th class="" style="padding-right:0px">
+							<input id="selall" type="checkbox" class="icheckbox_square-blue">
+						</th>
+						<th class="sorting_asc">品牌ID</th>
+						<th class="sorting">品牌名称</th>
+						<th class="sorting">品牌首字母</th>
+						<th class="text-center">操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="brand in brands">
+						<td><input  type="checkbox" ng-click="updateSelection($event, brand.id)"></td>
+						<td>{{brand.id}}</td>
+						<td>{{brand.name}}</td>
+						<td>{{brand.firstChar}}</td>
+						<td class="text-center">
+							<button type="button" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#editModal" ng-click="show(brand)">修改</button>
+						</td>
+					</tr>
+                </tbody>
+			 </table>
+			<tm-pagination conf="paginationConf"/>
+			 <!--数据列表/-->
+		</div>
+		<!-- 数据表格 /-->
+	 </div>
+     <!-- /.box-body -->
+
+	<!-- 编辑窗口 -->
+	<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" >
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel">品牌编辑</h3>
+			</div>
+			<div class="modal-body">
+				<table class="table table-bordered table-striped"  width="800px">
+					<tr>
+						<td>品牌名称</td>
+						<td><input  class="form-control" placeholder="品牌名称" ng-model="brand.name"></td>
+					</tr>
+					<tr>
+						<td>首字母</td>
+						<td><input  class="form-control" placeholder="首字母" ng-model="brand.firstChar"></td>
+					</tr>
+				 </table>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-success"  data-dismiss="modal" aria-hidden="true" ng-click="save()">保存</button>
+				<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+			</div>
+		  </div>
+		</div>
+	</div>
+</body>
+</html>

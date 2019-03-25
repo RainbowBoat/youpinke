@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- ###### 单机版配置 ###### -->
+    <!-- 属性文件由用到的项目去加载 -->
+
+    <!-- 配置Jedis连接工厂 --><!-- 若要使用集群版这个配置就不需要了 -->
+    <bean id="connectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="hostName" value="${redis.host}"/>
+        <property name="port" value="${redis.port}"/>
+    </bean>
+
+
+
+    <!-- ###### 集群版配置 ###### -->
+    <!-- 配置集群节点属性源 -->
+    <!--<bean id="propertySource" class="org.springframework.core.io.support.ResourcePropertySource">-->
+        <!--<constructor-arg name="location" value="classpath:props/redis-cluster.properties"/>-->
+    <!--</bean>-->
+
+    <!--&lt;!&ndash; 集群的配置信息对象 &ndash;&gt;-->
+    <!--<bean id="clusterConfig" class="org.springframework.data.redis.connection.RedisClusterConfiguration">-->
+        <!--&lt;!&ndash; 指定集群节点集合 &ndash;&gt;-->
+        <!--<constructor-arg name="propertySource" ref="propertySource"/>-->
+    <!--</bean>-->
+
+    <!--&lt;!&ndash; 集群版的连接工厂 &ndash;&gt;-->
+    <!--<bean id="connectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">-->
+        <!--&lt;!&ndash; 设置集群的配置信息对象(集群节点) &ndash;&gt;-->
+        <!--<constructor-arg ref="clusterConfig"/>-->
+    <!--</bean>-->
+
+    <!--配置RedisTemplate (单机和集群都是用这个) -->
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="connectionFactory"/>
+    </bean>
+
+</beans>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder location="classpath:jms.properties"/>
+
+    <!--ActiveMQ的工厂-->
+    <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${brokerURL}"/>
+    </bean>
+    <!--Spring-JMS的工厂-->
+    <bean id="singleConnectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory" ref="activeMQConnectionFactory"/>
+    </bean>
+
+    <!-- 消息生产者的配置 -->
+    <!--JMSTemplate模板对象发送消息-->
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <!--设置连接工厂-->
+        <property name="connectionFactory" ref="singleConnectionFactory"/>
+    </bean>
+    <!--配置消息的目标(点对点)-->
+    <bean id="solrQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="solr.queue"/>
+    </bean>
+
+    <bean id="solrDeleteQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="solr.delete.queue"/>
+    </bean>
+
+    <bean id="pageTopic" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="page.topic"/>
+    </bean>
+
+    <bean id="pageDeleteTopic" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="page.delete.topic"/>
+    </bean>
+</beans>

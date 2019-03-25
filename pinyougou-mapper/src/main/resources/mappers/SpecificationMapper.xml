@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pinyougou.mapper.SpecificationMapper">
+
+	<resultMap id="specificationMap" type="Specification">
+		<id property="id" column="id"/>
+		<collection property="specificationOptions" column="id" ofType="SpecificationOption" select="com.pinyougou.mapper.SpecificationOptionMapper.findBySpId"
+					/>
+	</resultMap>
+	<select id="findAll" resultMap="specificationMap">
+		SELECT * FROM tb_specification
+		<where>
+			<if	test="specName != null and specName != ''">
+			  	spec_name like concat('%', #{specName}, '%')
+			</if>
+		</where>
+		ORDER BY id ASC
+	</select>
+
+</mapper>
