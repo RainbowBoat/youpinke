@@ -86,7 +86,6 @@ app.controller("searchController", function ($scope, $http, $sce, $location, bas
     $scope.getKeywords = function () {
         $scope.searchParam.keywords = $location.search().keywords;
         $scope.search();
-
     };
 
 

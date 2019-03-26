@@ -31,7 +31,10 @@ public interface OrderService {
 	/** 多条件分页查询 */
 	List<Order> findByPage(Order order, int page, int rows);
 
-    void updateOrderStatus(String outTradeNo, String transactionId);
+    void updateStraightOrderStatus(String outTradeNo, String transactionId);
 
 
+    void saveLickOrder(Order order);
+
+	void updateLickOrderStatus(String outTradeNo, String transactionId, String lickedId);
 }

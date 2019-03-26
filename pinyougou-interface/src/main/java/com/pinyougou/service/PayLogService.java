@@ -32,4 +32,6 @@ public interface PayLogService {
 	List<PayLog> findByPage(PayLog payLog, int page, int rows);
 
     PayLog findFromRedis(String userId);
+
+    PayLog findLickPayLogFromRedis(String lickedId);
 }
