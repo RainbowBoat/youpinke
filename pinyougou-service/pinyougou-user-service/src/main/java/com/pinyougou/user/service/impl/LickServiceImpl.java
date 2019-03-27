@@ -135,7 +135,9 @@ public class LickServiceImpl implements LickService {
     private void deleteLickerFromApplyList(String lickerId, String lickedId) {
         // 将该用户舔狗申请列表中的该舔狗删除
         List<String> lickerApplications = (List<String>) redisTemplate.boundHashOps("lickerApplications").get(lickedId);
-        lickerApplications.remove(lickerId);
+        if (lickerApplications != null && lickerApplications.size() > 0) {
+            lickerApplications.remove(lickerId);
+        }
         // 如果这个舔狗删除后, 当前用户没有舔狗申请了就把redis中的申请集合删除
         if (lickerApplications.size() == 0) {
             redisTemplate.boundHashOps("lickerApplications").delete(lickedId);

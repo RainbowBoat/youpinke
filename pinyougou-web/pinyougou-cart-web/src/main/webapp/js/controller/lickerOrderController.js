@@ -36,7 +36,7 @@ app.controller('lickerOrderController', function ($scope, $interval, $location, 
         baseService.sendPost("/order/saveLickOrder", $scope.order).then(function (response) {
             if (response.data) {
                 if ($scope.order.paymentType == 1) {
-                    location.href = "/order/pay.html";
+                    location.href = "/order/lickPay.html?lickedId=" + lickedId;
                 } else {
                     location.href = "/order/paysuccess.html";
                 }
@@ -49,7 +49,7 @@ app.controller('lickerOrderController', function ($scope, $interval, $location, 
     $scope.genLickPayCode = function () {
         var lickedId = $location.search().lickedId;
         baseService.sendGet("/order/genLickPayCode?lickedId=" + lickedId).then(function (response) {
-            $scope.loutTradeNo = response.data.outTradeNo;
+            $scope.outTradeNo = response.data.outTradeNo;
             $scope.money = (response.data.totalFee / 100).toFixed(2);
             $scope.codeUrl = response.data.codeUrl;
 
@@ -63,7 +63,7 @@ app.controller('lickerOrderController', function ($scope, $interval, $location, 
                     $interval.cancel(timer);
                     location.href = "/order/paysuccess.html?money=" + $scope.money;
                 }
-                if ($scope.payStatus == "3") {
+                if ($scope.payStatus == "4") {
                     $interval.cancel(timer);
                     location.href = "/order/payfail.html"
                 }

@@ -20,10 +20,16 @@ public class LickedCartController {
     private CartService cartService;
 
     @GetMapping("/letOthers2Pay")
-    public void letOthers2Pay(String[] itemIds) {
+    public boolean letOthers2Pay(String[] itemIds) {
 
-        String lickedId = request.getRemoteUser();
+        try {
+            String lickedId = request.getRemoteUser();
 
-        cartService.makeTempCartForLicker(lickedId, itemIds);
+            cartService.makeTempCartForLicker(lickedId, itemIds);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

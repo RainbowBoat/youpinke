@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<base href="/">
 		<meta charset="UTF-8"/>
 		<title>微信支付页</title>
         <link rel="icon" href="/assets/img/favicon.ico"/>
@@ -13,12 +14,19 @@
 		<script src="/js/controller/baseController.js"></script>
 		<script src="/js/controller/cartController.js"></script>
 		<script src="/js/controller/orderController.js"></script>
+		<script src="/js/controller/lickerOrderController.js"></script>
 		<script src="/js/qrious.min.js"></script>
+		<script type="text/javascript">
+            app.config(function ($locationProvider) {
+                $locationProvider.html5Mode(true);
+            })
+
+		</script>
 
 	</head>
 	<body ng-app="pinyougou"
-		  ng-controller="orderController"
-		  ng-init="genLickPayCode();">
+		  ng-controller="lickerOrderController"
+		  ng-init="showLoginName();genLickPayCode()">
 		<!--head-->
 		<div class="top">
 			<div class="py-container">

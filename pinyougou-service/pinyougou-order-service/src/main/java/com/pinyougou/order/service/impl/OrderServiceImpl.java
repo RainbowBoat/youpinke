@@ -68,7 +68,8 @@ public class OrderServiceImpl implements OrderService {
             List<Map.Entry<Integer, Integer>> indexList = (List<Map.Entry<Integer, Integer>>) redisTemplate.boundHashOps("tempCartIndexList").get(username);
 
 
-            deleteTempCartList(cartList, sourceCartList, indexList, username);
+            List<Cart> afterList = deleteTempCartList(cartList, sourceCartList, indexList, username);
+            redisTemplate.boundValueOps("cart_" + username).set(afterList);
 
             // 将用户的临时购物车删除
             redisTemplate.boundHashOps("tempCartList").delete(username);
@@ -131,16 +132,20 @@ public class OrderServiceImpl implements OrderService {
         // 将舔狗进一部筛选的购物车的数据从licked的源购物车中删除
         List<Cart> sourceCartList = (List<Cart>)redisTemplate.boundValueOps("cart_" + lickedId).get();
         List<Map.Entry<Integer, Integer>> indexList = (List<Map.Entry<Integer, Integer>>)redisTemplate.boundHashOps("lickerTempCartOfLickedIndexList").get(lickedId);
-        deleteTempCartList(cartList, sourceCartList, indexList, lickedId);
+        List<Cart> afterListOfSourceList = deleteTempCartList(cartList, sourceCartList, indexList, lickedId);
+        redisTemplate.boundValueOps("cart_" + lickedId).set(afterListOfSourceList);
 
         // 将licked准备给舔狗的购物车中舔狗已支付的商品删除
         List<Cart> tempCartForLickerList = (List<Cart>)redisTemplate.boundHashOps("tempCartForLickerList").get(lickedId);
-        List<Map.Entry<Integer, Integer>> tempCartForLickerIndexList = (List<Map.Entry<Integer, Integer>>)redisTemplate.boundHashOps("tempCartForLickerIndexList").get(lickedId);
-        deleteTempCartList(cartList, tempCartForLickerList, tempCartForLickerIndexList, lickedId);
+        // 舔狗筛选的购物车相对于中间购物车的索引
+        List<Map.Entry<Integer, Integer>> tempCartForLickerIndexList = (List<Map.Entry<Integer, Integer>>)redisTemplate.boundHashOps("lickerTempCartOfLickedToMidIndexList").get(lickedId);
+        List<Cart> afterListOfMidList = deleteTempCartList(cartList, tempCartForLickerList, tempCartForLickerIndexList, lickedId);
+        redisTemplate.boundHashOps("tempCartForLickerList").put(lickedId, afterListOfMidList);
 
         // 将舔狗进一部筛选的购物车删除
         redisTemplate.boundHashOps("lickerTempCartOfLickedList").delete(lickedId);
         redisTemplate.boundHashOps("lickerTempCartOfLickedIndexList").delete(lickedId);
+        redisTemplate.boundHashOps("lickerTempCartOfLickedToMidIndexList").delete(lickedId);
     }
 
     @Override
@@ -150,7 +155,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 从源购物车集合中删除临时购物车中集合中的商品
-    private void deleteTempCartList(List<Cart> tempCartList, List<Cart> sourceCartList, List<Map.Entry<Integer, Integer>> indexList, String userId) {
+    private List<Cart> deleteTempCartList(List<Cart> tempCartList, List<Cart> sourceCartList, List<Map.Entry<Integer, Integer>> indexList, String userId) {
 
         Collections.reverse(indexList);
 
@@ -160,8 +165,12 @@ public class OrderServiceImpl implements OrderService {
             Cart cart = sourceCartList.get(cartIndex);
             List<OrderItem> orderItems = cart.getOrderItems();
             orderItems.remove(itemIndex);
+            // 判断这个商家的商品是否都被删除了, 如果是则把这个商家从购物车中删除
+            if (orderItems == null || orderItems.size() == 0) {
+                sourceCartList.remove(cart);
+            }
         }
-        redisTemplate.boundValueOps("cart_" + userId).set(sourceCartList);
+        return sourceCartList;
     }
 
     // 生成支付订单对象

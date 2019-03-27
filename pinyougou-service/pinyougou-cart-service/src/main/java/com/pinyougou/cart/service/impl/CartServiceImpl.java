@@ -20,7 +20,8 @@ import java.util.*;
  * lickedId - tempCartForLickerList lickedId给舔狗准备的临时购物车
  * lickedId - tempCartForLickerIndexList lickedId给舔狗准备的临时购物车索引
  * lickedId - lickerTempCartOfLickedList 舔狗在lickedId准备的临时购物车的基础上进一步筛选的临时购物车
- * lickedId - lickerTempCartOfLickedIndexList 舔狗在lickedId准备的临时购物车的基础上进一步筛选的临时购物车的索引
+ * lickedId - lickerTempCartOfLickedIndexList 舔狗在lickedId准备的临时购物车的基础上进一步筛选的临时购物车的相对于源购物车的索引
+ * lickedId - lickerTempCartOfLickedToMidIndexList 舔狗进一步筛选的购物车相对于licked给舔狗准备的购物车的索引
  */
 
 @Service(interfaceName = "com.pinyougou.service.CartService")
@@ -102,7 +103,8 @@ public class CartServiceImpl implements CartService {
     @Override
     public void makeTempCart(String userId, String[] itemIds) {
         try {
-            makeBufferCartList(userId, itemIds, "tempCartIndexList", "tempCartList");
+            List<Cart> sourceList = findFromRedis(userId);
+            makeBufferCartList(userId, itemIds, sourceList,  "tempCartIndexList", "tempCartList");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -116,7 +118,8 @@ public class CartServiceImpl implements CartService {
     @Override
     public void makeTempCartForLicker(String lickedId, String[] itemIds) {
         try {
-            makeBufferCartList(lickedId, itemIds, "tempCartForLickerIndexList", "tempCartForLickerList");
+            List<Cart> sourceList = findFromRedis(lickedId);
+            makeBufferCartList(lickedId, itemIds, sourceList, "tempCartForLickerIndexList", "tempCartForLickerList");
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -135,7 +138,11 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void lickerTempCartForLicked(String lickerId, String lickedId, String[] itemIds) {
-        makeBufferCartList(lickedId, itemIds, "lickerTempCartOfLickedIndexList", "lickerTempCartOfLickedList");
+        List<Cart> sourceList = findFromRedis(lickedId);
+        makeBufferCartList(lickedId, itemIds, sourceList, "lickerTempCartOfLickedIndexList", "lickerTempCartOfLickedList");
+
+        List<Cart> yourLickedCart = findYourLickedCart(lickerId, lickedId);
+        makeBufferCartList(lickedId, itemIds, yourLickedCart, "lickerTempCartOfLickedToMidIndexList", "uselessList");
     }
 
     @Override
@@ -174,10 +181,10 @@ public class CartServiceImpl implements CartService {
         return orderItem;
     }
 
-    private void makeBufferCartList(String userId, String[] itemIds, String buffIndexListNameInRedis, String buffListNameInRedis) {
+    private void makeBufferCartList(String userId, String[] itemIds, List<Cart> sourceList ,String buffIndexListNameInRedis, String buffListNameInRedis) {
         try {
 
-            List<Cart> cartList = findFromRedis(userId);
+            List<Cart> cartList = sourceList;
             List<Cart> tempCartList = new ArrayList<>();
             List<Map.Entry<Integer, Integer>> indexList = new ArrayList<>();
             List<String> itemIdArr = Arrays.asList(itemIds);
