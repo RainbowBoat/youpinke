@@ -22,7 +22,7 @@ app.controller('sellerController', function($scope, $controller, baseService){
 
     $scope.savePassword=function () {
 
-        if (!($scope.seller.password&&$scope.seller.newPassword&&$scope.newPassword)){
+        if (!($scope.seller.password && $scope.seller.newPassword && $scope.newPassword)){
             alert("不能留空!");
             return;
 
