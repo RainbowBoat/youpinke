@@ -31,7 +31,7 @@ public class OrderController {
     private PayLogService payLogService;
 
     @PostMapping("/saveOrder")
-    public boolean saveOrder(@RequestBody Order order, HttpServletRequest request) {
+    public boolean saveOrder(@RequestBody Order order) {
         try {
             String username = request.getRemoteUser();
             order.setUserId(username);
@@ -45,8 +45,7 @@ public class OrderController {
     }
 
     @GetMapping("/genPayCode")
-    public Map<String, Object> genPayCode(HttpServletRequest request) {
-        IdWorker idWorker = new IdWorker();
+    public Map<String, Object> genPayCode() {
         String userId = request.getRemoteUser();
         PayLog payLog = payLogService.findFromRedis(userId);
         return weChatPayService.genPayCode(payLog.getOutTradeNo(), String.valueOf(payLog.getTotalFee()));
@@ -61,7 +60,45 @@ public class OrderController {
         if (resultMap != null && resultMap.size() > 0) {
             if ("SUCCESS".equals(resultMap.get("trade_state"))) {
                 data.put("payStatus", "1");
-                orderService.updateOrderStatus(outTradeNo, resultMap.get("transaction_id"));
+                orderService.updateStraightOrderStatus(outTradeNo, resultMap.get("transaction_id"));
+            }
+            if ("NOTPAY".equals(resultMap.get("trade_state"))) data.put("payStatus", "2");
+        }
+
+        return data;
+    }
+
+    @PostMapping("/saveLickOrder")
+    public boolean saveLickOrder(@RequestBody Order order) {
+        try {
+            String lickerId = request.getRemoteUser();
+            order.setUserId(lickerId);
+            order.setSourceType("2");
+            orderService.saveLickOrder(order);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @GetMapping("/genLickPayCode")
+    public Map<String, Object> genLickPayCode(String lickedId) {
+        PayLog payLog = payLogService.findLickPayLogFromRedis(lickedId);
+        Map<String, Object> map = weChatPayService.genPayCode(payLog.getOutTradeNo(), String.valueOf(payLog.getTotalFee()));
+        return map;
+    }
+
+    @GetMapping("/queryLickPayStatus")
+    public Map<String, Object> queryLickPayStatus(String outTradeNo, String lickedId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("payStatus", "3");
+        Map<String, String> resultMap = weChatPayService.queryPayStatus(outTradeNo);
+
+        if (resultMap != null && resultMap.size() > 0) {
+            if ("SUCCESS".equals(resultMap.get("trade_state"))) {
+                data.put("payStatus", "1");
+                orderService.updateLickOrderStatus(outTradeNo, resultMap.get("transaction_id"), lickedId);
             }
             if ("NOTPAY".equals(resultMap.get("trade_state"))) data.put("payStatus", "2");
         }

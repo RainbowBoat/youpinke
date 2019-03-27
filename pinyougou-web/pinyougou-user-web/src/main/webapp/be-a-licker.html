@@ -9,8 +9,14 @@
     
 	<link rel="stylesheet" type="text/css" href="css/pages-seckillOrder.css"/>
 
+	<script src="/plugins/angularjs/angular.min.js"></script>
+	<script src="/js/base.js"></script>
+	<script src="/js/service/baseService.js"></script>
+	<script src="/js/controller/indexController.js"></script>
+	<script src="/js/controller/lickerController.js"></script>
+
 </head>
-<body>
+<body ng-app="pinyougou" ng-controller="lickerController" ng-init="showLoginName();findLickeds()">
     <!-- 头部栏位 -->
     <!--页面顶部-->
 <div id="nav-bottom">
@@ -20,8 +26,13 @@
 			<div class="py-container">
 				<div class="shortcut">
 					<ul class="fl">
-						<li class="f-item">品优购欢迎您！</li>
-						<li class="f-item">请<a href="login.html" target="_blank">登录</a>　<span><a href="register.html" target="_blank">免费注册</a></span></li>
+						<li class="f-item" ng-if="loginName"><span style="color: red;"><b>{{loginName}}</b></span>&nbsp;,品优购欢迎您！&nbsp;
+							<a href="/logout/cas">退出</a></li>
+						<li class="f-item" ng-if="!loginName">请
+							<a href="http://sso.pinyougou.com/cas/login">登录</a>
+							<span>
+						<a href="http://user.pinyougou.com/register.html">免费注册</a>
+						</span></li>
 					</ul>
 					<ul class="fr">
 						<li class="f-item">我的订单</li>
@@ -185,14 +196,14 @@ $(function(){
 						<dl>
 							<dl>
 								<dt><i>·</i> 舔狗中心</dt>
-								<dd><a href="be-a-licker.html">我是舔狗</a></dd>
+								<dd><a href="be-a-licker.html" class="list-active">我是舔狗</a></dd>
 								<dd><a href="my-licker.html">我的舔狗</a></dd>
 							</dl>
 						</dl>
 						<dl>
 							<dt><i>·</i> 设置</dt>
 							<dd><a href="home-setting-info.html" >个人信息</a></dd>
-							<dd><a href="home-setting-address.html" class="list-active" >地址管理</a></dd>
+							<dd><a href="home-setting-address.html" >地址管理</a></dd>
 							<dd><a href="home-setting-safe.html" >安全管理</a></dd>
 						</dl>
                     </div>
@@ -201,42 +212,25 @@ $(function(){
                 <div class="yui3-u-5-6">
                     <div class="body userAddress">
                         <div class="address-title">
-                            <span class="title">地址管理</span>
-                            <a data-toggle="modal" data-target=".edit" data-keyboard="false"   class="sui-btn  btn-info add-new">添加新地址</a>
+                            <span class="title">你在帮谁清空购物车</span>
+                            <a data-toggle="modal" data-target=".edit" data-keyboard="false"   class="sui-btn  btn-info add-new">新增清空购物车对象</a>
                             <span class="clearfix"></span>
                         </div>
                         <div class="address-detail">
                             <table class="sui-table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>姓名</th>
-                                        <th>地址</th>
-                                        <th>联系电话</th>
-                                        <th>操作</th>
+                                        <th>账号</th>
+                                        <th>去帮TA清空购物车</th>
+                                        <th>我不想当TA的舔狗了</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>刘田田</td>
-                                        <td>北京 北京市 海淀区 上地街道东北旺西路8号中关村软件园9号楼</td>
-                                        <td>1774***********4</td>
-                                        <td>
-                                            <a href="#">编辑</a>
-                                            <a href="#">删除</a>
-                                            默认地址
-                                        </td>
+                                    <tr ng-repeat="licked in lickedList">
+                                        <td>{{licked}}</td>
+                                        <td><a href="http://cart.pinyougou.com/cartOfLicked.html?lickedId={{licked}}">去当舔狗</a></td>
+                                        <td><button ng-click="beAMan(licked)">做个人吧</button></td>
                                     </tr>
-                                    <tr>
-                                        <td>沈沉</td>
-                                        <td>北京 北京市 海淀区 上地街道东北旺西路8号中关村软件园9号楼</td>
-                                        <td>1774***********4</td>
-                                        <td>
-                                            <a href="#">编辑</a>
-                                            <a href="#">删除</a>
-                                            <a href="#">设为默认</a>
-                                        </td>
-                                    </tr>
-                                    
                                 </tbody>
                             </table>                          
                         </div>
@@ -246,67 +240,29 @@ $(function(){
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" data-dismiss="modal" aria-hidden="true" class="sui-close">×</button>
-                                        <h4 id="myModalLabel" class="modal-title">新增地址</h4>
+                                        <h4 id="myModalLabel" class="modal-title">新增清空购物车对象</h4>
                                     </div>
                                     <div class="modal-body">
                                         <form action="" class="sui-form form-horizontal">
                                             <div class="control-group">
-                                            <label class="control-label">收货人：</label>
+                                            <label class="control-label">用户名：</label>
                                             <div class="controls">
-                                                <input type="text" class="input-medium">
-                                            </div>
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label">所在地区：</label>
-                                            <div class="controls">
-                                                <div data-toggle="distpicker">
-                                                <div class="form-group area">
-                                                    <select class="form-control" id="province1"></select>
-                                                </div>
-                                                <div class="form-group area">
-                                                    <select class="form-control" id="city1"></select>
-                                                </div>
-                                                <div class="form-group area">
-                                                    <select class="form-control" id="district1"></select>
-                                                </div>
-                                            </div>
-                                            </div>									 
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label">详细地址：</label>
-                                            <div class="controls">
-                                                <input type="text" class="input-large">
+                                                <input type="text" ng-model="preLicked.userId" class="input-medium">
                                             </div>
                                         </div>
                                         <div class="control-group">
                                             <label class="control-label">联系电话：</label>
                                             <div class="controls">
-                                                <input type="text" class="input-medium">
-                                            </div>
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label">邮箱：</label>
-                                            <div class="controls">
-                                                <input type="text" class="input-medium">
-                                            </div>
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label">地址别名：</label>
-                                            <div class="controls">
-                                                <input type="text" class="input-medium">
-                                            </div>
-                                            <div class="othername">
-                                                建议填写常用地址：<a href="#" class="sui-btn btn-default">家里</a>　<a href="#" class="sui-btn btn-default">父母家</a>　<a href="#" class="sui-btn btn-default">公司</a>
+                                                <input type="text" ng-model="preLicked.phone" class="input-medium">
                                             </div>
                                         </div>
                                         
                                         </form>
-                                        
-                                        
+
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" data-ok="modal" class="sui-btn btn-primary btn-large">确定</button>
-                                        <button type="button" data-dismiss="modal" class="sui-btn btn-default btn-large">取消</button>
+                                        <button type="button" data-ok="modal" ng-click="beALicker()" class="sui-btn btn-primary btn-large">我要当舔狗</button>
+                                        <button type="button" data-dismiss="modal" class="sui-btn btn-danger btn-large">我还是做个人吧</button>
                                     </div>
                                 </div>
                             </div>
