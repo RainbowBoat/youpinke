@@ -186,11 +186,6 @@ app.controller('cartController', function ($scope, $controller, baseService) {
     /* 全选方法结束 */
 
 
-
-
-
-
-
     /* 让他人清空购物车 开始 */
 
     $scope.letOthers2Pay = function () {

@@ -40,7 +40,7 @@ app.controller('sellerController', function($scope, $controller, baseService){
                     alert("修改成功!");
                     $scope.seller={};
                     $scope.newPassword="";
-                    parent.location.href="http://shop.pinyougou.com/admin/index.html";
+                    parent.location.href="http://shop.pinyougou.com/shoplogin.html?logout";
                 }else {
                     alert("原密码错误")
                 }

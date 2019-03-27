@@ -17,6 +17,7 @@ import com.sun.tools.corba.se.idl.constExpr.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.common.Mapper;
 
 import java.io.Serializable;
 import java.util.List;
@@ -114,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void updateStraightOrderStatus(String outTradeNo, String transactionId) {
 
-        PayLog payLog = updateOrderStatus(outTradeNo, transactionId);
+        PayLog payLog = updateOrderStatus(outTradeNo, transactionId, "2");
 
         redisTemplate.delete("payLog_" + payLog.getUserId());
     }
@@ -150,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void updateLickOrderStatus(String outTradeNo, String transactionId, String lickedId) {
-        PayLog payLog = updateOrderStatus(outTradeNo, transactionId);
+        PayLog payLog = updateOrderStatus(outTradeNo, transactionId, "3");
         redisTemplate.boundHashOps("lickPayLog").delete(lickedId);
     }
 
@@ -234,7 +235,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 更新订单状态
-    private PayLog updateOrderStatus(String outTradeNo, String transactionId) {
+    private PayLog updateOrderStatus(String outTradeNo, String transactionId, String status) {
         PayLog payLog = payLogMapper.selectByPrimaryKey(outTradeNo);
         payLog.setPayTime(new Date());
         payLog.setTransactionId(transactionId);
@@ -245,7 +246,7 @@ public class OrderServiceImpl implements OrderService {
         for (String orderId : orderIds) {
             Order order = new Order();
             order.setOrderId(Long.parseLong(orderId));
-            order.setStatus("2");
+            order.setStatus(status);
             order.setUpdateTime(new Date());
             order.setPaymentTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);
