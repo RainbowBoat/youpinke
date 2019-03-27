@@ -31,4 +31,6 @@ public interface ProvincesService {
 	/** 多条件分页查询 */
 	List<Provinces> findByPage(Provinces provinces, int page, int rows);
 
+
+
 }

@@ -1,5 +1,7 @@
 package com.pinyougou.pojo;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -50,11 +52,12 @@ public class User implements Serializable{
     private Integer points;
 	@Column(name="experience_value")
     private Integer experienceValue;
-	@Column(name="birthday")
-    private Date birthday;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date  birthday;
 	@Column(name="last_login_time")
     private Date lastLoginTime;
-
+    @Column(name = "address")
+    private String address;
     public Long getId() {
         return id;
     }
@@ -228,6 +231,47 @@ public class User implements Serializable{
     }
 
     public void setLastLoginTime(Date lastLoginTime) {
+
         this.lastLoginTime = lastLoginTime;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", created=" + created +
+                ", updated=" + updated +
+                ", sourceType='" + sourceType + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", name='" + name + '\'' +
+                ", status='" + status + '\'' +
+                ", headPic='" + headPic + '\'' +
+                ", qq='" + qq + '\'' +
+                ", accountBalance=" + accountBalance +
+                ", isMobileCheck='" + isMobileCheck + '\'' +
+                ", isEmailCheck='" + isEmailCheck + '\'' +
+                ", sex='" + sex + '\'' +
+                ", userLevel=" + userLevel +
+                ", points=" + points +
+                ", experienceValue=" + experienceValue +
+                ", birthday=" + birthday +
+                ", lastLoginTime=" + lastLoginTime +
+                '}';
     }
 }

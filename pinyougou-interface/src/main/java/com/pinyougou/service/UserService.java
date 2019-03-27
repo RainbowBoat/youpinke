@@ -35,4 +35,10 @@ public interface UserService {
 	boolean sendCode(String phone);
 
 	boolean checkCode(String phone, String smsCode);
+	//密码修改
+    void submit(User user);
+
+    String findNumber(String user);
+
+    void saveUser(User user);
 }
