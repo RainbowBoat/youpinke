@@ -187,7 +187,10 @@ public class CartServiceImpl implements CartService {
             List<Cart> cartList = sourceList;
             List<Cart> tempCartList = new ArrayList<>();
             List<Map.Entry<Integer, Integer>> indexList = new ArrayList<>();
+
+            // asList的返回对象是一个Arrays内部类,并没有实现集合的修改方法。Arrays.asList体现的是适配器模式，只是转换接口，后台的数据仍是数组。
             List<String> itemIdArr = Arrays.asList(itemIds);
+            // 所以这里需要创建一个ArrayList
             ArrayList<String> itemIdList = new ArrayList<>(itemIdArr);
 
             // 根据用户选中的id, 从购物车中复制一份到临时购物车中
