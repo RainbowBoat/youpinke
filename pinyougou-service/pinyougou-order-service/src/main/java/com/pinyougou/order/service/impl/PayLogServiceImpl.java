@@ -55,4 +55,10 @@ public class PayLogServiceImpl implements PayLogService {
         PayLog payLog = (PayLog) redisTemplate.boundValueOps("payLog_" + userId).get();
         return payLog;
     }
+
+    @Override
+    public PayLog findLickPayLogFromRedis(String lickedId) {
+        PayLog payLog = (PayLog) redisTemplate.boundHashOps("lickPayLog").get(lickedId);
+        return payLog;
+    }
 }

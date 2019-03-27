@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<base href="/">
 	<meta charset="utf-8"/>
 	<title>我的购物车</title>
 
@@ -13,9 +14,16 @@
 	<script src="/js/service/baseService.js"></script>
 	<script src="/js/controller/baseController.js"></script>
 	<script src="/js/controller/cartController.js"></script>
+	<script src="/js/controller/cartOfLickedController.js"></script>
+	<script type="text/javascript">
+        app.config(function ($locationProvider) {
+            $locationProvider.html5Mode(true);
+        })
+
+	</script>
 
 </head>
-<body ng-app="pinyougou" ng-controller="cartController" ng-init="init()">
+<body ng-app="pinyougou" ng-controller="cartOfLickedController" ng-init="showLoginName();findYourLickedCart();">
 	<!--head-->
 	<div class="top">
 		<div class="py-container">
@@ -146,7 +154,7 @@
 						<span><em>已节省：</em><i>-¥20.00</i></span>
 					</div>
 					<div class="sumbtn">
-						<input type="button" class="sum-btn" ng-click="pushIds()" target="_blank" value="结算">
+						<input type="button" class="sum-btn" ng-click="lickerTempCartForLicked()" target="_blank" value="当个舔狗">
 					</div>
 				</div>
 			</div>

@@ -51,7 +51,6 @@ app.controller('cartController', function ($scope, $controller, baseService) {
                 }
             }
         }
-
     };
 
     /* 全选方法开始 */
@@ -67,7 +66,6 @@ app.controller('cartController', function ($scope, $controller, baseService) {
                 $scope.packedIds.push(itemId);
             }
         }
-        $scope.pushIds();
     };
 
     window.onload = function (ev) {
@@ -169,6 +167,9 @@ app.controller('cartController', function ($scope, $controller, baseService) {
     };
 
     $scope.pushIds = function () {
+
+        $scope.packIds();
+
         if ($scope.packedIds.length > 0) {
             baseService.sendGet("/cart/tempCart?itemIds=" + $scope.packedIds).then(function (response) {
                 if (response.data) {
@@ -187,19 +188,28 @@ app.controller('cartController', function ($scope, $controller, baseService) {
 
 
 
-    /* 提交已选中的商品id到后台 */
 
-    // $scope.pushIdMaps = function () {
-    //     if ($scope.idMapList.length > 0) {
-    //         baseService.sendPost("/cart/tempCart", $scope.idMapList).then(function (response) {
-    //             if (response.data) {
-    //                 location.href = "/order/getOrderInfo.html";
-    //             } else {
-    //                 alert("结算失败")
-    //             }
-    //         })
-    //     } else {
-    //         alert("请先选择商品");
-    //     }
-    // };
+
+
+    /* 让他人清空购物车 开始 */
+
+    $scope.letOthers2Pay = function () {
+
+        $scope.packIds();
+
+        if ($scope.packedIds.length > 0) {
+            baseService.sendGet("/lickedCart/letOthers2Pay?itemIds=" + $scope.packedIds).then(function (response) {
+                if (response.data) {
+                    alert("已经通知您的舔狗")
+                } else {
+                    alert("结算失败")
+                }
+            })
+        } else {
+            alert("请先选择商品");
+        }
+    };
+
+    /* 让他人清空购物车 结束 */
+
 });

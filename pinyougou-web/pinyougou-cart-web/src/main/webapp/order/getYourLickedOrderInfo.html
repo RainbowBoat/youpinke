@@ -11,8 +11,9 @@
 	<script src="/js/base.js"></script>
 	<script src="/js/service/baseService.js"></script>
 	<script src="/js/controller/baseController.js"></script>
-	<script src="/js/controller/orderController.js"></script>
+	<script src="/js/controller/lickerOrderController.js"></script>
 	<script src="/js/controller/cartController.js"></script>
+	<script src="/js/controller/orderController.js"></script>
 	<script type="text/javascript">
         app.config(function ($locationProvider) {
             $locationProvider.html5Mode(true);
@@ -20,7 +21,7 @@
 
 	</script>
 </head>
-<body ng-app="pinyougou" ng-controller="orderController" ng-init="findCart();showLoginName();findAllAddress()">
+<body ng-app="pinyougou" ng-controller="lickerOrderController" ng-init="findLickerTempCartForLicked();showLoginName();findDefaultAddress()">
 	<!--head-->
 	<div class="top">
 		<div class="py-container">
@@ -251,7 +252,7 @@
 			<div class="fc-receiverInfo">寄送至:{{address.provinceId}} {{address.cityId}} {{address.townId}} {{address.address}} 收货人：{{address.contact}} {{address.mobile}}</div>
 		</div>
 		<div class="submit">
-			<a class="sui-btn btn-danger btn-xlarge" ng-click="saveOrder()">提交订单</a>
+			<a class="sui-btn btn-danger btn-xlarge" ng-click="saveLickOrder()">提交订单</a>
 		</div>
 	</div>
 	<!-- 底部栏位 -->

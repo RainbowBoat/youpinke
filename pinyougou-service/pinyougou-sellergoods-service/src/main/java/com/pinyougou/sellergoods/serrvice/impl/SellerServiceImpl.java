@@ -9,6 +9,7 @@ import com.pinyougou.mapper.SellerMapper;
 import com.pinyougou.pojo.Seller;
 import com.pinyougou.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
@@ -77,5 +78,23 @@ public class SellerServiceImpl implements SellerService {
     @Override
     public void updateStatus(String sellerId, Integer status) {
         sellerMapper.updateStatus(sellerId, status);
+    }
+
+    @Override
+    public boolean updatePassword(String newPassword, String oldPassword, String sellerId) {
+        try {
+        String passwords = sellerMapper.selectByPrimaryKey(sellerId).getPassword();
+        if (BCrypt.checkpw(oldPassword,passwords)){
+            String password = BCrypt.hashpw(newPassword,BCrypt.gensalt());
+            int mgs = 3;
+            sellerMapper.updatePassword(password,sellerId);
+
+        }else {
+            return false;
+        }
+    }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return true;
     }
 }

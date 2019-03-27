@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<base href="/">
 		<meta charset="UTF-8"/>
-		<title>支付页-成功</title>
-		<link rel="icon" href="/assets/img/favicon.ico"/>
+		<title>微信支付页</title>
+        <link rel="icon" href="/assets/img/favicon.ico"/>
     	<link rel="stylesheet" type="text/css" href="/css/webbase.css"/>
-		<link rel="stylesheet" type="text/css" href="/css/pages-paysuccess.css"/>
-
-		<base href="/"/>
+		<link rel="stylesheet" type="text/css" href="/css/pages-weixinpay.css"/>
 
 		<script src="/plugins/angularjs/angular.min.js"></script>
 		<script src="/js/base.js"></script>
@@ -15,15 +14,19 @@
 		<script src="/js/controller/baseController.js"></script>
 		<script src="/js/controller/cartController.js"></script>
 		<script src="/js/controller/orderController.js"></script>
-
+		<script src="/js/controller/lickerOrderController.js"></script>
+		<script src="/js/qrious.min.js"></script>
 		<script type="text/javascript">
-            // 配置位置提供者
-            app.config(function($locationProvider){
+            app.config(function ($locationProvider) {
                 $locationProvider.html5Mode(true);
-            });
+            })
+
 		</script>
+
 	</head>
-	<body ng-app="pinyougou" ng-controller="orderController" ng-init="showLoginName()">
+	<body ng-app="pinyougou"
+		  ng-controller="lickerOrderController"
+		  ng-init="showLoginName();genLickPayCode()">
 		<!--head-->
 		<div class="top">
 			<div class="py-container">
@@ -58,22 +61,37 @@
 		<div class="cart py-container">
 			<!--logoArea-->
 			<div class="logoArea">
-				<div class="fl logo"><span class="title">支付页</span></div>
+				<div class="fl logo"><span class="title">收银台</span></div>
+
 			</div>
 			<!--主内容-->
-			<div class="paysuccess">
-				<div class="success">
-					<h3><img src="img/_/right.png" width="48" height="48">　恭喜您，支付成功啦！</h3>
-					<div class="paydetail">
-					<p>支付方式：微信支付</p>
-					<p><b>支付金额：<span style="color: red;">￥{{getMoney()}}</span>元</b></p>
-					<p class="button">
-						<a href="myOrder.html" class="sui-btn btn-xlarge btn-danger">查看订单</a>
-						&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.pinyougou.com" class="sui-btn btn-xlarge ">继续购物</a></p>
-				    </div>
+			<div class="checkout py-container  pay">
+				<div class="checkout-tit">
+					<h4 class="fl tit-txt"><span class="success-icon"></span><span  class="success-info">订单提交成功，请您及时付款！订单号：{{outTradeNo}}</span></h4>
+                    <span class="fr"><em class="sui-lead">应付金额：</em><em  class="orange money">￥{{money}}</em>元</span>
+					<div class="clearfix"></div>
+				</div>				
+				<div class="checkout-steps">
+					<div class="fl weixin">微信支付</div>
+                    <div class="fl sao"> 
+                        <p class="red" ng-if="payStatus == 4">二维码已过期，刷新页面重新获取二维码。</p>
+                        <div class="fl code">
+							<img id="qrious"/>
+                            <div class="saosao">
+                                <p>请使用微信扫一扫</p>
+                                <p>扫描二维码支付</p>
+                            </div>
+                        </div>
+                        <div class="fl phone">
+                            
+                        </div>
+                        
+                    </div>
+                    <div class="clearfix"></div>
+				    <p><a href="pay.html" target="_blank">> 其他支付方式</a></p>
 				</div>
-				
 			</div>
+
 		</div>
 		<!-- 底部栏位 -->
 		<!--页面底部-->
@@ -209,8 +227,15 @@
 </div>
 <!--页面底部END-->
 <script src="/js/plugins/jquery/jquery.min.js"></script>
-<script src="/js/plugins/jquery.easing/jquery.easing.min.js"></script>
-<script src="/js/plugins/sui/sui.min.js"></script>
-<script src="/components/ui-modules/nav/nav-portal-top.js"></script>
+<script src="js/plugins/jquery.easing/jquery.easing.min.js"></script>
+<script src="js/plugins/sui/sui.min.js"></script>
+<script src="js/widget/nav.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$("ul.payType li").click(function(){
+			$(this).css("border","2px solid #E4393C").siblings().css("border-color","#ddd");
+		})
+	});
+</script>
 </body>
 </html>

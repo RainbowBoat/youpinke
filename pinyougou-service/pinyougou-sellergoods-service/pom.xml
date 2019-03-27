@@ -9,8 +9,15 @@
   <modelVersion>4.0.0</modelVersion>  
   <artifactId>pinyougou-sellergoods-service</artifactId>
   <packaging>war</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>4.2.3.RELEASE</version>
+        </dependency>
+    </dependencies>
 
-  <properties>
+    <properties>
     <port>9091</port>
   </properties>
 </project>

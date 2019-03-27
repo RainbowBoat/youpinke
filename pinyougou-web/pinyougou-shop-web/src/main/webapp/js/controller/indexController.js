@@ -9,7 +9,4 @@ app.controller('indexController', function($scope, $controller, baseService) {
             $scope.loginName = value.data.loginName;
         });
     };
-
-
-
 });

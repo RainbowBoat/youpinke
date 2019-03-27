@@ -4,6 +4,7 @@ import org.csource.common.MyException;
 import org.csource.fastdfs.ClientGlobal;
 import org.csource.fastdfs.StorageClient;
 import org.junit.Test;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -22,4 +23,5 @@ public class FastDFS {
 
         System.out.println(Arrays.toString(arr));
     }
+
 }
