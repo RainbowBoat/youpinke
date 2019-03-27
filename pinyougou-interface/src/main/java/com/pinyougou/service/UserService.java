@@ -37,4 +37,10 @@ public interface UserService {
 	boolean checkCode(String phone, String smsCode);
 
 	boolean checkPhone(String userId, String phone);
+	//密码修改
+    void submit(User user);
+
+    String findNumber(String user);
+
+    void saveUser(User user);
 }

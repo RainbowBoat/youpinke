@@ -14,9 +14,13 @@
     <security:http pattern="/register.html" security="none"/>
     <security:http pattern="/user/save" security="none"/>
     <security:http pattern="/user/sendCode" security="none"/>
+    <!--发行验证码页面-->
+    <security:http pattern="/verify" security="none"/>
 
     <security:http entry-point-ref="casAuthenticationEntryPoint">
         <security:intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
+        <!--会进入登陆过滤器-->
+        <security:intercept-url pattern="/login" access="permitAll"/>
         <security:csrf disabled="true"/>
 
         <!-- springSecurity的过滤器 -->
@@ -45,6 +49,11 @@
         <property name="authenticationManager" ref="authenticationManager"/>
         <!-- 配置登陆的请求地址 -->
         <property name="filterProcessesUrl" value="/login/cas"/>
+    </bean>
+    <!-- 配置认证器入口 -->
+    <bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <!-- 登陆表单请求的地址 -->
+        <constructor-arg name="loginFormUrl" value="/login"/>
     </bean>
     <!-- 认证管理器 -->
     <security:authentication-manager alias="authenticationManager">

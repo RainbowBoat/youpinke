@@ -2,13 +2,10 @@ package com.pinyougou.sellergoods.serrvice.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.pinyougou.mapper.ItemCatMapper;
-import com.pinyougou.mapper.ItemMapper;
 import com.pinyougou.pojo.ItemCat;
 import com.pinyougou.service.ItemCatService;
-import com.pinyougou.solr.SolrItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;

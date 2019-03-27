@@ -30,16 +30,14 @@ public class UserServiceImpl implements UserService {
     @Value("${sms.templateCode}")
     private String templateCode;
 
+
     @Autowired
     private UserMapper userMapper;
 
     @Override
     public void save(User user) {
         try {
-            user.setCreated(new Date());
-            user.setUpdated(user.getCreated());
-            user.setPassword(DigestUtils.md5Hex(user.getPassword()));
-            userMapper.insertSelective(user);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -80,7 +78,7 @@ public class UserServiceImpl implements UserService {
         try {
             //生成6位随机数
             String code = UUID.randomUUID().toString().replaceAll("-", "").replaceAll("[a-z|A-Z]", "").substring(0, 6);
-
+            System.out.println("验证码："+code);
             //调用短信发送接口
             HttpClientUtils httpClientUtils = new HttpClientUtils(false);
 
@@ -88,11 +86,10 @@ public class UserServiceImpl implements UserService {
             params.put("phone", phone);
             params.put("signName", signName);
             params.put("templateCode", templateCode);
-            params.put("templateParam", "{\"number\":\"" + code + "\"}");
+            params.put("templateParam", "{'code':"+code+"'}");
 
             String content = httpClientUtils.sendPost(smsUrl, params);
             Map<String, Object> resMap = JSON.parseObject(content, Map.class);
-
             //存入Redis中, 90秒失效
             redisTemplate.boundValueOps(phone).set(code, 90, TimeUnit.SECONDS);
 
@@ -128,5 +125,31 @@ public class UserServiceImpl implements UserService {
             return false;
         }
     }
+    @Override
+    public void submit(User user) {
+        try {
+
+            // 密码加密
+            user.setPassword(DigestUtils.md5Hex(user.getPassword()));
+            userMapper.update(user.getPassword(),user.getUsername());
+        }catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
+
+    }
+
+    @Override
+    public String findNumber(String user) {
+        User user1 =userMapper.findNumber(user);
+        return user1.getPhone();
+    }
+
+    @Override
+    public void saveUser(User user) {
+       Long id=userMapper.selectById(user.getUsername());
+        user.setId(id);
+        userMapper.updateByPrimaryKeySelective(user);
+    }
+
 
 }
