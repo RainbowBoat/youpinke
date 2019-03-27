@@ -35,6 +35,8 @@ public interface UserService {
 	boolean sendCode(String phone);
 
 	boolean checkCode(String phone, String smsCode);
+
+	boolean checkPhone(String userId, String phone);
 	//密码修改
     void submit(User user);
 

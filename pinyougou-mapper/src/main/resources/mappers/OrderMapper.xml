@@ -5,4 +5,14 @@
 
 <mapper namespace="com.pinyougou.mapper.OrderMapper">
 
+	<select id="findOrdersByUserId" resultType="Order">
+		SELECT * FROM tb_order WHERE user_id = #{userId}
+		<if test="status != null and status.length > 0">
+			<foreach collection="status" open="and status in (" close=")" item="temp" separator=",">
+				#{temp}
+			</foreach>
+		</if>
+		order by update_time desc
+	</select>
+
 </mapper>

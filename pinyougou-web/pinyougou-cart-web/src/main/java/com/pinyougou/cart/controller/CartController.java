@@ -109,4 +109,19 @@ public class CartController {
 
         return tempCartList;
     }
+
+    @GetMapping("/letOthers2Pay")
+    public boolean letOthers2Pay(String[] itemIds) {
+        try {
+
+            String userId = request.getRemoteUser();
+
+//            cartService.letOthers2Pay(userId, itemIds);
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

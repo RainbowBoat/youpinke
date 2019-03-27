@@ -1,5 +1,5 @@
 app.controller('orderController', function ($scope, $interval, $location, $controller, baseService) {
-    $controller('cartController', {$scope: $scope});
+    $controller('baseController', {$scope: $scope});
 
     $scope.findCart = function () {
         baseService.sendGet("/cart/findTempCartFromRedis").then(function (response) {
@@ -15,7 +15,6 @@ app.controller('orderController', function ($scope, $interval, $location, $contr
                     $scope.totalEntity.totalMoney += orderItem.totalFee;
                 }
             }
-
         });
     };
 
@@ -90,6 +89,8 @@ app.controller('orderController', function ($scope, $interval, $location, $contr
     $scope.getMoney = function () {
         return $location.search().money;
     };
+
+
 
 
     /* 购买指定商品 */

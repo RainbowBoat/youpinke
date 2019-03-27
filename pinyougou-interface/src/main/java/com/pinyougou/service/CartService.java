@@ -18,4 +18,11 @@ public interface CartService {
 
     List<Cart> findTempCartFromRedis(String userId);
 
+    void makeTempCartForLicker(String lickedId, String[] itemIds);
+
+    List<Cart> findYourLickedCart(String lickerId, String lickedId);
+
+    void lickerTempCartForLicked(String lickerId, String lickedId, String[] itemIds);
+
+    List<Cart> findLickerTempCartForLicked(String lickedId);
 }

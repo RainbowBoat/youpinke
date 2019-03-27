@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import java.io.Serializable;
 import java.util.*;
@@ -108,6 +109,22 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public boolean checkPhone(String userId, String phone) {
+        Example example = new Example(User.class);
+
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("username", userId);
+
+        List<User> users = userMapper.selectByExample(example);
+        User user = users.get(0);
+
+        if (phone.equals(user.getPhone())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     @Override
     public void submit(User user) {
         try {
