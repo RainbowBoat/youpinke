@@ -64,6 +64,7 @@ app.controller('sellerController', function($scope, $controller, baseService){
       baseService.sendPost("/seller/update", $scope.seller)
           .then(function (response) {
               if(response.data){
+                  alert("保存成功!");
                   $scope.reload();
               }else{
                   alert("操作失败!");
