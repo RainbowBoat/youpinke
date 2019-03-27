@@ -24,5 +24,4 @@ app.controller("sellerController", function ($scope, $controller, baseService) {
             }
         })
     };
-
 });

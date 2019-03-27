@@ -1,13 +1,19 @@
 package com.pinyougou.shop.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSONObject;
 import com.pinyougou.pojo.Seller;
+import com.pinyougou.pojo.User;
 import com.pinyougou.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import sun.security.util.Password;
 
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,5 +54,34 @@ public class SellerController {
         Map<String, String> map = new HashMap<>();
         map.put("loginName", username);
         return map;
+    }
+
+
+    @PostMapping("/savePassword")
+    public boolean savePassword(@RequestBody Map<String,String> map){
+        try {
+
+            String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
+            String newPassword = map.get("newPassword");
+            String oldPassword = map.get("password");
+           if (sellerService.updatePassword(newPassword,oldPassword,sellerId)){
+               return true;
+           }else {
+               return false;
+           }
+        }catch (Exception e){
+           e.printStackTrace();
+        }
+        return false;
+    }
+
+    @GetMapping("/saveSeller")
+    public boolean saveSeller(Seller seller){
+        try {
+          return  true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  false;
     }
 }

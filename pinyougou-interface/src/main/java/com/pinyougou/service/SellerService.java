@@ -34,4 +34,5 @@ public interface SellerService {
 
 	void updateStatus(String sellerId, Integer status);
 
+	boolean updatePassword(String newPassword, String oldPassword, String sellerId);
 }

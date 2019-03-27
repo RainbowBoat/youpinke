@@ -16,6 +16,7 @@
     <module>pinyougou-service</module>
     <module>pinyougou-web</module>
       <module>pinyougou-solr-util</module>
+      <module>../../aaaa</module>
   </modules>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
