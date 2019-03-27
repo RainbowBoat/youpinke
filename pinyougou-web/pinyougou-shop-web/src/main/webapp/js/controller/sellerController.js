@@ -22,7 +22,7 @@ app.controller('sellerController', function($scope, $controller, baseService){
 
     $scope.savePassword=function () {
 
-        if (!($scope.seller.password&&$scope.seller.newPassword&&$scope.newPassword)){
+        if (!($scope.seller.password && $scope.seller.newPassword && $scope.newPassword)){
             alert("不能留空!");
             return;
 
@@ -64,18 +64,16 @@ app.controller('sellerController', function($scope, $controller, baseService){
       baseService.sendPost("/seller/update", $scope.seller)
           .then(function (response) {
               if(response.data){
+                  alert("保存成功!");
                   $scope.reload();
               }else{
                   alert("操作失败!");
               }
           });
     };
-    $scope.cleanPassword=function () {
-        $scope.seller={};
-        $scope.newPassword="";
-    };
 
-    $scope.cleanSeller=function () {
-        $scope.seller={};
+    //修改商家数据后新增退出功能  (zhang)
+    $scope.backAway = function () {
+      parent.location.href = "/admin/index.html";
     };
 });
