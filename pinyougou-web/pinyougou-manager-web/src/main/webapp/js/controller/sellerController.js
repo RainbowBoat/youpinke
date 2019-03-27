@@ -2,6 +2,9 @@ app.controller("sellerController", function ($scope, $controller, baseService) {
 
     $controller("baseController", {$scope: $scope});
 
+    //商家管理(zhang)
+    $scope.searchEntity = ['待审核','已审核','审核未通过','关闭'];
+
     $scope.searchEntity = {};
 
     $scope.search = function (pageNum, rows) {
@@ -24,5 +27,7 @@ app.controller("sellerController", function ($scope, $controller, baseService) {
             }
         })
     };
+
+
 
 });

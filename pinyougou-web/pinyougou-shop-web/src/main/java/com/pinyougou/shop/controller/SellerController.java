@@ -32,6 +32,7 @@ public class SellerController {
         }
     }
 
+    //修改商家资料  (Yao)
     @PostMapping("/update")
     public boolean update(@RequestBody Seller seller) {
         try {
@@ -49,4 +50,18 @@ public class SellerController {
         map.put("loginName", username);
         return map;
     }
+
+    //回显数据  (zhang)
+    @GetMapping("/showData")
+    public Seller showData(){
+        try {
+            String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
+            Seller seller = sellerService.findOne(sellerId);
+            return seller;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
