@@ -71,12 +71,9 @@ app.controller('sellerController', function($scope, $controller, baseService){
               }
           });
     };
-    $scope.cleanPassword=function () {
-        $scope.seller={};
-        $scope.newPassword="";
-    };
 
-    $scope.cleanSeller=function () {
-        $scope.seller={};
+    //修改商家数据后新增退出功能  (zhang)
+    $scope.backAway = function () {
+      parent.location.href = "/admin/index.html";
     };
 });
