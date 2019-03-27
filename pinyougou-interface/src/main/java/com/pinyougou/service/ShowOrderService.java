@@ -5,5 +5,7 @@ import java.util.Map;
 
 public interface ShowOrderService {
 
-    Map<String, Object> findOrders(String userId, Map<String, String> pageParam);
+    Map<String, Object> findOrders(String userId, Map<String, String> pageParam, String[] status);
+
+    Map<String,Object> findLickOrders(String receiver, Map<String, String> pageParam, String status);
 }

@@ -25,8 +25,8 @@ public class HistoryOrdersController {
     @PostMapping("/findOrders")
     public Map<String, Object> findOrders(@RequestBody Map<String, String> pageParam) {
         String userId = request.getRemoteUser();
-
-        Map<String, Object> data = showOrderService.findOrders(userId,  pageParam);
+        String[] status = {"1", "2"};
+        Map<String, Object> data = showOrderService.findOrders(userId,  pageParam, status);
 
         return data;
     }

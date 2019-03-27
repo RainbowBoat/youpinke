@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
             String username = order.getUserId();
             List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("tempCartList").get(order.getUserId());
 
-            PayLog payLog = createPayLog(order, cartList);
+            PayLog payLog = createPayLog(order, cartList, "1");
 
             // 将支付单保存到Redis
             redisTemplate.boundValueOps("payLog_" + order.getUserId()).set(payLog);
@@ -126,7 +126,7 @@ public class OrderServiceImpl implements OrderService {
         String lickedId = order.getReceiver();
 
         List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("lickerTempCartOfLickedList").get(lickedId);
-        PayLog payLog = createPayLog(order, cartList);
+        PayLog payLog = createPayLog(order, cartList, "3");
 
         redisTemplate.boundHashOps("lickPayLog").put(lickedId, payLog);
 
@@ -151,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void updateLickOrderStatus(String outTradeNo, String transactionId, String lickedId) {
-        PayLog payLog = updateOrderStatus(outTradeNo, transactionId, "3");
+        PayLog payLog = updateOrderStatus(outTradeNo, transactionId, "4");
         redisTemplate.boundHashOps("lickPayLog").delete(lickedId);
     }
 
@@ -175,7 +175,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 生成支付订单对象
-    private PayLog createPayLog(Order order, List<Cart> cartList) {
+    private PayLog createPayLog(Order order, List<Cart> cartList, String orderStatus) {
         // 保存订单编号集合
         StringBuilder orderIdsBuilder = new StringBuilder();
         double totalMoney = 0;
@@ -186,7 +186,7 @@ public class OrderServiceImpl implements OrderService {
             Long id = idWorker.nextId();
             newOrder.setOrderId(id);
             newOrder.setPaymentType(order.getPaymentType());
-            newOrder.setStatus("1");
+            newOrder.setStatus(orderStatus);
             newOrder.setCreateTime(new Date());
             newOrder.setUpdateTime(newOrder.getCreateTime());
             newOrder.setUserId(order.getUserId());
@@ -235,7 +235,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 更新订单状态
-    private PayLog updateOrderStatus(String outTradeNo, String transactionId, String status) {
+    private PayLog updateOrderStatus(String outTradeNo, String transactionId, String orderStatus) {
         PayLog payLog = payLogMapper.selectByPrimaryKey(outTradeNo);
         payLog.setPayTime(new Date());
         payLog.setTransactionId(transactionId);
@@ -246,7 +246,7 @@ public class OrderServiceImpl implements OrderService {
         for (String orderId : orderIds) {
             Order order = new Order();
             order.setOrderId(Long.parseLong(orderId));
-            order.setStatus(status);
+            order.setStatus(orderStatus);
             order.setUpdateTime(new Date());
             order.setPaymentTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);

@@ -48,6 +48,6 @@
 	</filter-mapping>
 
 	<welcome-file-list>
-		<welcome-file>home-index.html</welcome-file>
+		<welcome-file>home-order-pay.html</welcome-file>
 	</welcome-file-list>
 </web-app>

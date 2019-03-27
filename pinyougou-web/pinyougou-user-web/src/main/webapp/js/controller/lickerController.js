@@ -31,5 +31,4 @@ app.controller('lickerController', function($scope, $controller, $timeout, baseS
         })
     };
 
-
 });
