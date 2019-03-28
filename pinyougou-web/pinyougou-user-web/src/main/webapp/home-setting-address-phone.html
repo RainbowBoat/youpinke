@@ -388,7 +388,7 @@ $(function(){
                                     <div class="control-group">
                                         <label for="inputPassword" class="control-label">手机号：</label>
                                         <div class="controls">
-                                            <input name="inputphone" type="text" ng-model="user.phone" id="inputphone" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                                            <input name="inputphone" type="text" ng-model="phone" id="inputphone" onkeyup="this.value=this.value.replace(/\D/g,'')"
 												   onafterpaste="this.value=this.value.replace(/\D/g, '')" placeholder="请输入新手机号">
                                         </div>                            
                                     </div>
@@ -397,7 +397,7 @@ $(function(){
 										<table>
 											<tr>
 												<td>
-													<input type="text" name="code"/>
+													<input type="text" ng-model="codes" name="code"/>
 												</td>
 												<td>
 													<img src="/verify"/>
@@ -408,16 +408,17 @@ $(function(){
                                     <div class="control-group">
                                         <label for="inputRepassword" class="control-label">短信验证码：</label>
                                         <div class="controls">
-                                            <input name="msgcode" type="text" id="msgcode">
+                                            <input name="msgcode" ng-model="code" type="text" id="msgcode">
                                         </div>
                                         <div class="controls">
-											<a href="javascript:;" ng-model="YYz" ng-click="sendCode();">获取短信验证码</a>
+											<input type="button" ng-disabled="flag"
+												   value="{{tipMsg}}"  ng-click="sendMsg()"/>
                                         </div>
                                     </div>
 
                                     <div class="control-group next-btn">
                                         <a class="sui-btn btn-primary" href="home-setting-safe.html">上一步</a>&nbsp;
-                                        <a class="sui-btn btn-primary" type="submit" ng-click="Click" href="home-setting-address-complete.html">下一步</a>
+                                        <a class="sui-btn btn-primary" type="submit" ng-click="ClickTwo();" href="">下一步</a>
                                     </div>
                                 </form>
                             </div>

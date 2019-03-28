@@ -25,8 +25,8 @@ app.controller('userController', function($scope, $timeout, baseService){
     };
 
     $scope.sendMsg = function () {
-        if ($scope.user.phone && /^1[3|4|5|7|8|9]\d{9}$/.test($scope.user.phone)) {
-            baseService.sendGet("/user/sendCode?phone=" + $scope.user.phone).then(function (response) {
+        if ($scope.phone && /^1[3|4|5|7|8|9]\d{9}$/.test($scope.phone)) {
+            baseService.sendGet("/user/sendCode?phone=" + $scope.phone).then(function (response) {
                 if (response.data) {
                     $scope.flag = true;
                     $scope.downCount(90);

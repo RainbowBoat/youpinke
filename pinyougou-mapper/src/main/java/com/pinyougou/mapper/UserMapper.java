@@ -22,5 +22,6 @@ public interface UserMapper extends Mapper<User>{
     void update(@Param("password")String password, @Param("username")String username);
     @Select("SELECT id FROM tb_user WHERE username=#{username}")
     Long selectById(String username);
-
+    @Select("SELECT * FROM tb_user WHERE username=#{username}")
+    User selectByPhoneId(String username);
 }

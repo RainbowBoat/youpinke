@@ -108,4 +108,21 @@ public class UserController {
         }
         return false;
     }
+    @GetMapping("/clickJudge")
+    public boolean clickJudge(String code,String phone,String codes,HttpServletRequest request){
+        try {
+           Object oldcode = request.getSession().getAttribute(VerifyController.VERIFY_CODE);
+            if(oldcode.equals(codes)){
+                    boolean b=(boolean)userService.clickJudge(code,phone,request.getRemoteUser());
+                    if(b!=false){
+                        return true;
+                    }
+                }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return false;
+    }
 }

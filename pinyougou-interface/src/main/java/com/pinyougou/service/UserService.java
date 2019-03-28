@@ -43,4 +43,6 @@ public interface UserService {
     String findNumber(String user);
 
     void saveUser(User user);
+    //判断验证码是否正确
+	boolean clickJudge(String code,String phone,String username);
 }

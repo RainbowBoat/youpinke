@@ -1,4 +1,4 @@
-app.controller('indexController', function($scope,$controller,$location,baseService){
+app.controller('indexController', function($scope,$controller,$location,$timeout,baseService){
     $scope.showLoginName = function () {
         $scope.redirectUrl = window.encodeURIComponent(location.href);
         baseService.sendGet("/user/showLoginName").then(function (response) {
@@ -97,18 +97,73 @@ app.controller('indexController', function($scope,$controller,$location,baseServ
             alert("请输入手机号码！");
         }
     };
+    //判断验证码是否正确，绑定手机的下一步
+    $scope.Click=function(){
+        baseService.sendGet("/user/clickJudge?code="+$scope.code+"&phone="+$scope.phone+"&codes="+$scope.codes).then(function(response){
+            if(response.data==false){
+                alert("请输入正确的验证码")
+            }else if($scope.code==null){
+                alert("验证码不能为空")
+
+            }else if(response.data==true){
+                location.href="http://user.pinyougou.com/home-setting-address-phone.html";
+            }
+        })
+    };
+    $scope.ClickTwo=function(){
+        baseService.sendGet("/user/clickJudge?code="+$scope.code+"&phone="+$scope.phone+"&codes="+$scope.codes).then(function(response){
+            if(response.data==false){
+                alert("请输入正确的验证码")
+            }else if($scope.code==null){
+                alert("验证码不能为空")
+
+            }else if(response.data==true){
+                location.href="http://user.pinyougou.com/home-setting-address-complete.html";
+            }
+        })
+    };
   //显示手机号
     $scope.findNumber =function(){
         baseService.sendGet("/user/findNumber").then(function(response){
             $scope.phone = response.data;
+
         })
     };
-    //绑定手机的下一步
-    $scope.Click=function(){
-        if($scope.YZ==null){
-            alert("验证码不能为空")
-        }else{
-            location.href="http://user.pinyougou.com/home-setting-address-phone.html";
+    // 发送短信验证码
+    $scope.sendMsg = function () {
+        if ($scope.phone && /^1[3|4|5|7|8|9]\d{9}$/.test($scope.phone)) {
+            baseService.sendGet("/user/sendCode?phone=" + $scope.phone).then(function (response) {
+                // 获取响应数据
+                if (response.data){
+
+                    // 倒计时 (扩展)
+                    $scope.flag = true;
+                    // 调用倒计时方法
+                    $scope.downCount(90);
+                }else{
+                    alert("获取短信验证码失败！");
+                }
+
+            })
+        } else {
+            alert("手机号输入有误");
+        }
+    };
+    $scope.tipMsg = "获取短信验证码";
+    $scope.flag = false;
+    //获取验证码几时器
+    $scope.downCount = function (second) {
+        if (second > 0) {
+            second--;
+            $scope.tipMsg = second + "秒后重新获取验证码";
+
+            //开启定时器
+            $timeout(function () {
+                $scope.downCount(second);
+            },1000)
+        } else {
+            $scope.tipMsg = "获取短信验证码";
+            $scope.flag = false;
         }
     }
 });

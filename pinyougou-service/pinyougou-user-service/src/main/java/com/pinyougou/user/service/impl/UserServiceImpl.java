@@ -7,6 +7,7 @@ import com.pinyougou.mapper.UserMapper;
 import com.pinyougou.pojo.User;
 import com.pinyougou.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -79,6 +80,8 @@ public class UserServiceImpl implements UserService {
             //生成6位随机数
             String code = UUID.randomUUID().toString().replaceAll("-", "").replaceAll("[a-z|A-Z]", "").substring(0, 6);
             System.out.println("验证码："+code);
+            //存入Redis中, 90秒失效
+            redisTemplate.boundValueOps(phone).set(code, 90, TimeUnit.SECONDS);
             //调用短信发送接口
             HttpClientUtils httpClientUtils = new HttpClientUtils(false);
 
@@ -90,8 +93,6 @@ public class UserServiceImpl implements UserService {
 
             String content = httpClientUtils.sendPost(smsUrl, params);
             Map<String, Object> resMap = JSON.parseObject(content, Map.class);
-            //存入Redis中, 90秒失效
-            redisTemplate.boundValueOps(phone).set(code, 90, TimeUnit.SECONDS);
 
             return (boolean)resMap.get("success");
         } catch (Exception e) {
@@ -149,6 +150,19 @@ public class UserServiceImpl implements UserService {
        Long id=userMapper.selectById(user.getUsername());
         user.setId(id);
         userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Override
+    public boolean clickJudge(String code,String phone,String username) {
+
+        String co = redisTemplate.boundValueOps(phone).get();
+        if(StringUtils.isNoneBlank(co)&&code.equals(co)){
+            User user1= userMapper.selectByPhoneId(username);
+            user1.setPhone(phone);
+            userMapper.updateByPrimaryKeySelective(user1);
+            return true;
+        }
+        return false;
     }
 
 

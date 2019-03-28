@@ -389,7 +389,7 @@ $(function(){
                                     <div class="control-group">
                                         <label for="inputPassword" class="control-label" >验证方式：</label>
 										<div class="controls">
-											<input name="inputphone" type="text" ng-model="phone" id="inputphone" placeholder="请输入新手机号">
+											<input name="inputphone" type="text" ng-model="phone"  id="inputphone" placeholder="请输入新手机号">
 										</div>
                                     </div>
                                      <div class="control-group">
@@ -397,7 +397,7 @@ $(function(){
 										 <table>
 											 <tr>
 												 <td>
-													 <input type="text"   name="code"/>
+													 <input type="text" ng-model="codes"  name="code"/>
 												 </td>
 												 <td>
 													 <img src="/verify"/>
@@ -408,10 +408,11 @@ $(function(){
                                     <div class="control-group">
                                         <label for="inputRepassword" class="control-label" >短信验证码：</label>
                                         <div class="controls">
-                                            <input name="msgcode" type="text" ng-model="YZ" id="msgcode">
+                                            <input name="msgcode" type="text" ng-model="code" id="msgcode">
                                         </div>
                                         <div class="controls">
-											<input type="button"  ng-click="sendCode()"; value=/>获取短信验证码</button>
+											<input type="button" ng-disabled="flag"
+													 value="{{tipMsg}}"  ng-click="sendMsg()"/>
                                         </div>
                                     </div>
                                     <div class="control-group next-btn">
