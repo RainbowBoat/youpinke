@@ -22,7 +22,7 @@ app.controller('sellerController', function($scope, $controller, baseService){
 
     $scope.savePassword=function () {
 
-        if (!($scope.seller.password && $scope.seller.newPassword && $scope.newPassword)){
+        if (!($scope.seller.password&&$scope.seller.newPassword&&$scope.newPassword)){
             alert("不能留空!");
             return;
 
@@ -40,7 +40,7 @@ app.controller('sellerController', function($scope, $controller, baseService){
                     alert("修改成功!");
                     $scope.seller={};
                     $scope.newPassword="";
-                    parent.location.href="http://shop.pinyougou.com/shoplogin.html?logout";
+                    parent.location.href="http://shop.pinyougou.com/admin/index.html";
                 }else {
                     alert("原密码错误")
                 }
@@ -48,32 +48,12 @@ app.controller('sellerController', function($scope, $controller, baseService){
 
     };
 
-    //回显用户数据 (zhang)
-    $scope.showData = function () {
-      baseService.sendGet("/seller/showData").then(function (response) {
-          if(response.data){
-              $scope.seller = response.data;
-          }else{
-              alert("操作失败!");
-          }
-      });
+    $scope.cleanPassword=function () {
+        $scope.seller={};
+        $scope.newPassword="";
     };
 
-    //修改商家数据
-    $scope.update = function () {
-      baseService.sendPost("/seller/update", $scope.seller)
-          .then(function (response) {
-              if(response.data){
-                  alert("保存成功!");
-                  $scope.reload();
-              }else{
-                  alert("操作失败!");
-              }
-          });
-    };
-
-    //修改商家数据后新增退出功能  (zhang)
-    $scope.backAway = function () {
-      parent.location.href = "/admin/index.html";
+    $scope.cleanSeller=function () {
+        $scope.seller={};
     };
 });

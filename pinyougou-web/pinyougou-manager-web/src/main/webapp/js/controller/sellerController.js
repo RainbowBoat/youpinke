@@ -5,8 +5,6 @@ app.controller("sellerController", function ($scope, $controller, baseService) {
     //商家管理(zhang)
     $scope.searchEntity = ['待审核','已审核','审核未通过','关闭'];
 
-    $scope.searchEntity = {};
-
     $scope.search = function (pageNum, rows) {
         baseService.findAsPage("/seller/findAsPage",pageNum, rows, $scope.searchEntity).then(function (value) {
             $scope.sellers = value.data.rows;
