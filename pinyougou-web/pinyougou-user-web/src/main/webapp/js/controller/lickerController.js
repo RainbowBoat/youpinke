@@ -9,7 +9,7 @@ app.controller('lickerController', function($scope, $controller, $timeout, baseS
     };
 
 
-    $scope.getLickedMsg = function () {
+    $scope.getLickerMsg = function () {
         baseService.sendGet("/licker/getLickerMsg").then(function (response) {
             var msg = "";
             if (response.data != null && response.data.length > 0) {

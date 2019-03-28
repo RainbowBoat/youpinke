@@ -47,6 +47,7 @@ app.controller('lickedController', function($scope, $controller, $timeout, baseS
     $scope.deleteLicker = function (lickerId) {
         baseService.sendGet("/licked/deleteLicker?lickerId=" + lickerId).then(function (response) {
             $scope.findAllApplication();
+            window.reload();
         })
     }
 });

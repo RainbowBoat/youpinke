@@ -183,7 +183,7 @@ public class LickServiceImpl implements LickService {
 
     @Override
     public List<String> getLickerMsg(String lickerId) {
-        List<String> lickerMasList = (List<String>) redisTemplate.boundHashOps("lickedMsg").get(lickerId);
+        List<String> lickerMasList = (List<String>) redisTemplate.boundHashOps("lickerMsg").get(lickerId);
 
         redisTemplate.boundHashOps("lickedMsg").delete(lickerId);
 
