@@ -1,7 +1,4 @@
 package com.pinyougou.order.service.impl;
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Date;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.pinyougou.cart.Cart;
@@ -13,15 +10,13 @@ import com.pinyougou.pojo.Order;
 import com.pinyougou.pojo.OrderItem;
 import com.pinyougou.pojo.PayLog;
 import com.pinyougou.service.OrderService;
-import com.sun.tools.corba.se.idl.constExpr.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.common.Mapper;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * cart_userId - 用户的源购物车
@@ -147,6 +142,9 @@ public class OrderServiceImpl implements OrderService {
         redisTemplate.boundHashOps("lickerTempCartOfLickedList").delete(lickedId);
         redisTemplate.boundHashOps("lickerTempCartOfLickedIndexList").delete(lickedId);
         redisTemplate.boundHashOps("lickerTempCartOfLickedToMidIndexList").delete(lickedId);
+
+        // 通知licked
+        makeLickedMsg(lickedId, "你的舔狗已帮你下单");
     }
 
     @Override
@@ -254,5 +252,36 @@ public class OrderServiceImpl implements OrderService {
 
         return payLog;
 
+    }
+    /**
+     * 给舔狗留言
+     * @param lickerId
+     * @param msg
+     */
+    private void makeLickerMsg(String lickerId, String msg) {
+        // 得到舔狗的消息集合
+        List<String> lickerMsgList = (List<String>) redisTemplate.boundHashOps("lickerMsg").get(lickerId);
+        // 判断集合有效性
+        if (lickerMsgList == null || lickerMsgList.size() == 0) {
+            lickerMsgList = new ArrayList<>();
+        }
+        lickerMsgList.add(msg);
+
+        // 将消息存储
+        redisTemplate.boundHashOps("lickerMsg").put(lickerId, lickerMsgList);
+    }
+
+    /**
+     * 给licked留言
+     * @param lickedId
+     * @param msg
+     */
+    private void makeLickedMsg(String lickedId, String msg) {
+        List<String> lickedMsgList = (List<String>) redisTemplate.boundHashOps("lickedMsg").get(lickedId);
+        if (lickedMsgList == null || lickedMsgList.size() == 0) {
+            lickedMsgList = new ArrayList<>();
+        }
+        lickedMsgList.add(msg);
+        redisTemplate.boundHashOps("lickedMsg").put(lickedId, lickedMsgList);
     }
 }

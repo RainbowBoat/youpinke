@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,5 +79,18 @@ public class lickedController {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @GetMapping("/getLickedMsg")
+    public List<String> getLickedMsg() {
+        String lickedId = request.getRemoteUser();
+
+        List<String> lickedMsgList = lickService.getLickedMsg(lickedId);
+
+        if (lickedMsgList == null || lickedMsgList.size() == 0) {
+            lickedMsgList = new ArrayList<>();
+        }
+
+        return lickedMsgList;
     }
 }

@@ -11,6 +11,19 @@ app.controller('lickedController', function($scope, $controller, $timeout, baseS
         })
     };
 
+    $scope.getLickedMsg = function () {
+        baseService.sendGet("/licked/getLickedMsg").then(function (response) {
+            var msg = "";
+            if (response.data != null && response.data.length > 0) {
+                for (var i = 0; i < response.data.length; i++) {
+                    msg += JSON.stringify(response.data[i]) + "\n";
+                }
+                alert(msg);
+            }
+        })
+    };
+
+
     $scope.acceptLicker = function (lickerId) {
         baseService.sendGet("/licked/acceptLicker?lickerId=" + lickerId).then(function (response) {
             if (response.data) {
@@ -33,11 +46,7 @@ app.controller('lickedController', function($scope, $controller, $timeout, baseS
 
     $scope.deleteLicker = function (lickerId) {
         baseService.sendGet("/licked/deleteLicker?lickerId=" + lickerId).then(function (response) {
-            if (response.data) {
-                $scope.findAllApplication();
-            } else {
-                alert("操作失败")
-            }
+            $scope.findAllApplication();
         })
     }
 });

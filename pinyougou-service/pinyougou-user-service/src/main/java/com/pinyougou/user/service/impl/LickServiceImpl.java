@@ -25,6 +25,11 @@ public class LickServiceImpl implements LickService {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    /**
+     * 申请当舔狗
+     * @param lickerId
+     * @param lickedId
+     */
     @Override
     public void beALicker(String lickerId, String lickedId) {
 
@@ -41,13 +46,18 @@ public class LickServiceImpl implements LickService {
 
             // 先将舔狗申请保存到被申请对象的Redis中
             redisTemplate.boundHashOps("lickerApplications").put(lickedId, lickerApplications);
+            makeLickedMsg(lickedId, "你有新的舔狗申请");
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
+    /**
+     * 根据用户名找到对应的舔狗申请
+     * @param userId
+     * @return
+     */
     @Override
     public List<String> findLickers(String userId) {
         try {
@@ -61,6 +71,11 @@ public class LickServiceImpl implements LickService {
         }
     }
 
+    /**
+     * 根据用户名找到对应的舔狗
+     * @param userId
+     * @return
+     */
     @Override
     public String findMyLicker(String userId) {
         try {
@@ -72,7 +87,11 @@ public class LickServiceImpl implements LickService {
         }
     }
 
-    // 接受这个舔狗
+    /**
+     * 接受这个舔狗
+     * @param lickerId
+     * @param lickedId
+     */
     @Override
     public void acceptLicker(String lickerId, String lickedId) {
         // 将当前用户的舔狗设为这个, 然后将当前用户加入这个舔狗的列表, 然后将当前用户的舔狗申请集合中删除掉这个舔狗
@@ -97,23 +116,39 @@ public class LickServiceImpl implements LickService {
             // 将两个用户的舔狗关系持久化到数据库
             lickMapper.save(lickerId, lickedId);
 
+            makeLickerMsg(lickerId, "你有一个舔狗申请已被接受");
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    // 拒绝这个舔狗
+    /**
+     * 拒绝这个舔狗
+     * @param lickerId
+     * @param lickedId
+     */
     @Override
     public void refuseLicker(String lickerId, String lickedId) {
         deleteLickerFromApplyList(lickerId, lickedId);
+        makeLickerMsg(lickerId, "你有一个舔狗申请已被拒绝");
     }
 
-    // 找到当前用户舔的对象集合
+    /**
+     * 根据舔狗ID找到他所有的licked
+     * @param lickerId
+     * @return
+     */
     @Override
     public List<String> findLickeds(String lickerId) {
         return (List<String>) redisTemplate.boundHashOps("lickedList").get(lickerId);
     }
 
+    /**
+     * 删除两个人的舔狗关系
+     * @param lickerId
+     * @param lickedId
+     */
     @Override
     public void brokeUp(String lickerId, String lickedId) {
         // 把licked的licker删除
@@ -130,8 +165,36 @@ public class LickServiceImpl implements LickService {
 
         // 删除数据库的信息
         lickMapper.brokeUp(lickedId);
+
+        makeLickerMsg(lickerId, "恭喜你当个人了");
+        makeLickedMsg(lickedId, "GG, 舔狗关系结束了");
+
     }
 
+    @Override
+    public List<String> getLickedMsg(String lickedId) {
+
+        List<String> lickedMasList = (List<String>) redisTemplate.boundHashOps("lickedMsg").get(lickedId);
+
+        redisTemplate.boundHashOps("lickedMsg").delete(lickedId);
+
+        return lickedMasList;
+    }
+
+    @Override
+    public List<String> getLickerMsg(String lickerId) {
+        List<String> lickerMasList = (List<String>) redisTemplate.boundHashOps("lickedMsg").get(lickerId);
+
+        redisTemplate.boundHashOps("lickedMsg").delete(lickerId);
+
+        return lickerMasList;
+    }
+
+    /**
+     * 删除舔狗申请
+     * @param lickerId
+     * @param lickedId
+     */
     private void deleteLickerFromApplyList(String lickerId, String lickedId) {
         // 将该用户舔狗申请列表中的该舔狗删除
         List<String> lickerApplications = (List<String>) redisTemplate.boundHashOps("lickerApplications").get(lickedId);
@@ -145,4 +208,38 @@ public class LickServiceImpl implements LickService {
             redisTemplate.boundHashOps("lickerApplications").put(lickedId, lickerApplications);
         }
     }
+
+    /**
+     * 给舔狗留言
+     * @param lickerId
+     * @param msg
+     */
+    private void makeLickerMsg(String lickerId, String msg) {
+        // 得到舔狗的消息集合
+        List<String> lickerMsgList = (List<String>) redisTemplate.boundHashOps("lickerMsg").get(lickerId);
+        // 判断集合有效性
+        if (lickerMsgList == null || lickerMsgList.size() == 0) {
+            lickerMsgList = new ArrayList<>();
+        }
+        lickerMsgList.add(msg);
+
+        // 将消息存储
+        redisTemplate.boundHashOps("lickerMsg").put(lickerId, lickerMsgList);
+    }
+
+    /**
+     * 给licked留言
+     * @param lickedId
+     * @param msg
+     */
+    private void makeLickedMsg(String lickedId, String msg) {
+        List<String> lickedMsgList = (List<String>) redisTemplate.boundHashOps("lickedMsg").get(lickedId);
+        if (lickedMsgList == null || lickedMsgList.size() == 0) {
+            lickedMsgList = new ArrayList<>();
+        }
+        lickedMsgList.add(msg);
+        redisTemplate.boundHashOps("lickedMsg").put(lickedId, lickedMsgList);
+    }
+
+
 }

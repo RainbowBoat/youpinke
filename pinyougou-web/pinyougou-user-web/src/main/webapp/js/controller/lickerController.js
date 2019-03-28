@@ -8,6 +8,20 @@ app.controller('lickerController', function($scope, $controller, $timeout, baseS
         })
     };
 
+
+    $scope.getLickerMsg = function () {
+        baseService.sendGet("/licker/getLickerMsg").then(function (response) {
+            if (response.data != null && response.data.length > 0) {
+                for (var i = 0; i < response.data.length; i++) {
+                    $scope.msg += response.data[i];
+                }
+                if (msg != null && msg != "") {
+                    alert($scope.msg);
+                }
+            }
+        })
+    };
+
     $scope.preLicked = {};
 
     $scope.beALicker = function () {

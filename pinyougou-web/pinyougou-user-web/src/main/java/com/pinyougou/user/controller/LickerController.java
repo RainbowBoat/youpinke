@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,6 +68,19 @@ public class LickerController {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @GetMapping("/getLickerMsg")
+    public List<String> getLickerMsg() {
+        String lickerId = request.getRemoteUser();
+
+        List<String> lickedMsgList = lickService.getLickerMsg(lickerId);
+
+        if (lickedMsgList == null || lickedMsgList.size() == 0) {
+            lickedMsgList = new ArrayList<>();
+        }
+
+        return lickedMsgList;
     }
 
 }
