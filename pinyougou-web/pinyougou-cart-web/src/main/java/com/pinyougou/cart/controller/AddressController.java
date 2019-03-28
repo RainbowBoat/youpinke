@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/address")
 public class AddressController {
 
-    @Reference
+    @Reference(timeout = 1000000)
     private AddressService addressService;
 
     @Autowired

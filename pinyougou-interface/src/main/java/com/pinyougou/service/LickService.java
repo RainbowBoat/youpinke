@@ -17,4 +17,8 @@ public interface LickService {
     List<String> findLickeds(String lickerId);
 
     void brokeUp(String lickerId, String lickedId);
+
+    List<String> getLickedMsg(String lickedId);
+
+    List<String> getLickerMsg(String lickerId);
 }

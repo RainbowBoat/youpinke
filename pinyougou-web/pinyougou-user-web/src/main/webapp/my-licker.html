@@ -16,7 +16,7 @@
 	<script src="/js/controller/lickedController.js"></script>
 
 </head>
-<body ng-app="pinyougou" ng-controller="lickedController" ng-init="showLoginName();findAllApplication()">
+<body ng-app="pinyougou" ng-controller="lickedController" ng-init="showLoginName();findAllApplication();getLickedMsg()">
     <!-- 头部栏位 -->
     <!--页面顶部-->
 <div id="nav-bottom">
@@ -37,7 +37,7 @@
 					<ul class="fr">
 						<li class="f-item">我的订单</li>
 						<li class="f-item space"></li>
-						<li class="f-item"><a href="home.html" target="_blank">我的品优购</a></li>
+						<li class="f-item"><a href="http://user.pinyougou.com/" target="_blank">我的品优购</a></li>
 						<li class="f-item space"></li>
 						<li class="f-item">品优购会员</li>
 						<li class="f-item space"></li>
@@ -198,6 +198,7 @@ $(function(){
 								<dt><i>·</i> 舔狗中心</dt>
 								<dd><a href="be-a-licker.html">我是舔狗</a></dd>
 								<dd><a href="my-licker.html" class="list-active">我的舔狗</a></dd>
+
 							</dl>
 						</dl>
 						<dl>
@@ -205,9 +206,11 @@ $(function(){
 							<dd><a href="home-setting-info.html" >个人信息</a></dd>
 							<dd><a href="home-setting-address.html">地址管理</a></dd>
 							<dd><a href="home-setting-safe.html" >安全管理</a></dd>
+
 						</dl>
                     </div>
                 </div>
+
                 <!--右侧主内容-->
                 <div class="yui3-u-5-6">
                     <div class="body userAddress">
@@ -223,6 +226,7 @@ $(function(){
                                         <th>舔狗账号</th>
                                         <th>让他买</th>
                                         <th>操作</th>
+										<th>看看这个冤大头</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -230,6 +234,7 @@ $(function(){
                                         <td>{{myLicker}}</td>
                                         <td><a href="http://cart.pinyougou.com/letOthersPay.html">去选择商品</a></td>
                                         <td><button ng-click="deleteLicker(myLicker)">删除舔狗</button></td>
+										<td><a href="/historyOfLick.html?lickedId={{loginName}}">舔狗历史</a></td>
                                     </tr>
                                 </tbody>
                             </table>                          
